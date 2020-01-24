@@ -22,6 +22,9 @@ The main project that the students will be coding throughout the class is a simp
 It has clear object models, and will accommodate most of the topics in the curriculum - while still being easy to understand.
 Towards the end of the course, there will be plenty of extension points for extra-credit effort - where former HYF skills such as html, css, javascript and react can be used.
 
+### Prerequisites
+Students starting on the .NET master class should have some general experience with programming and GitHub, as well as good knowledge of web technologies such as HTML, CSS and Javascript - corresponding to the level achieved after completing the HYF standard curriculum. 
+Each student should bring a laptop (mac or pc) with [Visual Studio Community edition](https://visualstudio.microsoft.com/vs/community/) installed and working. Note that Visual Studio is not the same as Visual Studio Code.
 
 ### First Lesson
 Introduction to .NET, C#, Visual Studio and OOP.
