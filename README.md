@@ -34,10 +34,9 @@ First Lesson Goals:
 * Strongly typed
 * Namespaces and Usings
 * Inheritance
-* Interfaces
-* Objects, methods, properties and events.
+* Objects, methods, properties.
+* Extension methods, Lambda Methods
 * Working with visual studio and compiling and debugging code
-* Use the System.IO namespace (or similar)
 * Exercises: Building a simple Console application, with the basics of the card game mentioned as "The Project".
 
 ### Second lesson
@@ -48,7 +47,9 @@ Second Lesson Goals:
 * Generics and lists
 * LINQ
 * Exceptions
+* Interfaces
 * Typical OOP patterns
+* Use the System.IO namespace (or similar)
 * Class libraries and references
 * Nuget packages
 * Use Restsharp or SharpZipLib or similar package.
