@@ -39,6 +39,8 @@ First Lesson Goals:
 * Working with visual studio and compiling and debugging code
 * Exercises: Building a simple Console application, with the basics of the card game mentioned as "The Project".
 
+Find all material for the first lesson [here](Week1).
+
 ### Second lesson
 More in-depth with c# and .NET basics.
 Second Lesson Goals:
@@ -55,6 +57,8 @@ Second Lesson Goals:
 * Use Restsharp or SharpZipLib or similar package.
 * Exercises & homework : Extract game logic from the earlier developed Console App into a separate library and rewrite the console to use that. Extend game logic with persistence (Json files).
 
+Find all material for the second lesson [here](Week2).
+
 ### Third lesson
 MVC and Web introduction.
 Third Lesson Goals:
@@ -67,6 +71,8 @@ Third Lesson Goals:
 * Debug and explore the Request and Response objects
 * Exercises & homework: Build a basic web-version (ASP.NET Core MVC) of the project made in Lesson 1 & 2 - ideally using the same class library.
 
+Find all material for the third lesson [here](Week3).
+
 ### Fourth lesson
 Using Azure services in your application and hosing it on Azure.
 Fourth Lesson Goals:
@@ -77,6 +83,8 @@ Fourth Lesson Goals:
 * Introduction to Azure Functions.
 * Exercises & homework: Polish the functionality and look and feel of the web version of the game. Persist game state in Azure. Publish game to Azure App Services.
 
+Find all material for the Fourth lesson [here](Week4).
+
 ### Fifth Lesson
 Putting it all together and finishing the main project application
 Fifth Lesson Goals:
@@ -86,3 +94,6 @@ Fifth Lesson Goals:
 * Discussing build pipelines and unit testing
 * Looking at a real-life web project
 * Exercises: Extra credit work
+
+
+Find all material for the Fifth lesson [here](Week5).
