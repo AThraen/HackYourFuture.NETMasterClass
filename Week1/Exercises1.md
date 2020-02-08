@@ -4,7 +4,7 @@
 First we need to create the project and solution in Visual Studio. A solution is a group of multiple projects that (can) work together.
 Select "Create New Project" in Visual Studio and then "Console App (.NET Core)". Make sure to select the C# version of it.
 
-!(NewProject.png)
+![](NewProject.png)
 
 Name your project (and solution) ThirtyOne and select a location to store it on disk (it will create solution folders and project folders itself).
 
