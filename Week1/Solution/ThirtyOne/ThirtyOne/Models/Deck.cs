@@ -9,8 +9,6 @@ namespace ThirtyOne.Models
     /// </summary>
     public class Deck
     {
-        private const int SHUFFLETIMES = 20000;
-
         /// <summary>
         /// The list cards
         /// </summary>
@@ -57,9 +55,9 @@ namespace ThirtyOne.Models
         /// <param name="R"></param>
         public void Shuffle(Random R)
         {
-            for (int i = 0; i < SHUFFLETIMES; i++)
+            for (int i = 0; i < Cards.Count; i++)
             {
-                int from = R.Next(Cards.Count);
+                int from = i;
                 int to = R.Next(Cards.Count);
                 Card c = Cards[to];
                 Cards[to] = Cards[from];

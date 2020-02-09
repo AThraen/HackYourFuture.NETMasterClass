@@ -18,7 +18,11 @@ namespace ThirtyOne.Helpers
         /// <returns></returns>
         public static int CalculateScore(this IEnumerable<Card> Cards)
         {
-            return Cards.GroupBy(c => c.Suit).OrderByDescending(grp => grp.Sum(c => c.Value)).First().Sum(c => c.Value);
+            return Cards
+                .GroupBy(c => c.Suit)
+                .OrderByDescending(grp => grp.Sum(c => c.Value))
+                .First()
+                .Sum(c => c.Value);
         }
 
         /// <summary>

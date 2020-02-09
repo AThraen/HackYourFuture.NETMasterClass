@@ -50,7 +50,7 @@ We will declare that in another file, so go ahead and create a new file for the 
 ```csharp
 public enum Suits
 {
-	Spades,
+    Spades,
     Hearts,
     Clubs,
     Diamonds
@@ -64,4 +64,131 @@ public Suits Suit { get; set; }
 ```
 
 ### The Deck
+We will need a deck, to represent the source of cards. The Deck is the container we'll create the cards in initially. It's also what we'll shuffle and draw from.
+
+As an essential property of the Deck is the List of cards.
+A list is essentially an array, that we can easily add or remove items to/from.
+To get a list particularly suited for Cards, we will use what's called Generics - a way to induce an object prepared for it, with other types.
+
+**Properties:**
+*)List<Card> Cards, the list of cards. 
+*)int CardsLeft, a get property with a number of how many cards are left
+
+**Methods:**
+*) Deck(), Constructor, Purpose is to ensure the members are initialized and ready for use.
+*) void Initialize(), Prepares the deck and creates the cards
+*) void Shuffle(), Shuffles the deck by taking each card position and moving it to a random new position.
+*) Card DrawCard(), Draws a card from the top of the deck and returns it.
+
+You can find sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Deck.cs).
+
+### Trying out the code we have so far ###
+This might be a good time to try to compile and run your code.
+Since this is a console application, it will by default look for the ```static void Main(string[] args)``` method in the "Program" class and try to run that.
+So, let's put some code in there to create a deck, initialize it, shuffle it and draw a card from it:
+
+```csharp
+    //Initial test
+    Deck d = new Deck();
+    d.Initialize();
+    Random r = new Random();
+    d.Shuffle(r);
+    Card c = d.DrawCard();
+```
+Try to put a breakpoint at the first code line (where the Deck is created). You put a breakpoint by clicking in the margin next to it.
+Now, press Run in visual studio and you should see the program stop at that line. You can mouse over the objects to see what they contain.
+Try to step through it, line by line and see how the Deck changes.
+
+![](BreakPoint.png)
+
+### Card List Extensions
+The players are going to hold lists of cards (for the hand). It would, however, be very useful if we could add a few additional methods to a List<Card>.
+One approach we could take is to create a new class - a CardList and let that inherit List<Card> - but I suggest we try out a different approach: Extension methods.
+Extention methods are really useful, as they let you extend already existing classes - even classes you can't edit or inherit - with your own helper methods.
+
+The trick is simply to create a static class (meaning a class that cannot be instantiated, but is a static object in itself) and in that put static methods.
+The first parameter in these methods should then be the type that you want to extend, preceeded with the keyword "this".
+
+I suggest creating a 'Helpers' folder in your solution and placing the extension methods there - I call them CardListExtensions.
+
+The first extension method is very important - it's a method that calculates the Thirty-One score for a list of cards. The second will simply let us output a list of cards in an easy way.
+
+```csharp
+    public static class CardListExtensions
+    {
+
+        /// <summary>
+        /// Calculate score for a list of cards
+        /// </summary>
+        /// <param name="Cards"></param>
+        /// <returns></returns>
+        public static int CalculateScore(this IEnumerable<Card> Cards)
+        {
+            return Cards
+                .GroupBy(c => c.Suit)
+                .OrderByDescending(grp => grp.Sum(c => c.Value))
+                .First()
+                .Sum(c => c.Value);
+        }
+
+        /// <summary>
+        /// Create a string list of all cards
+        /// </summary>
+        /// <param name="Cards"></param>
+        /// <returns></returns>
+        public static string ToListString(this IEnumerable<Card> Cards)
+        {
+            return string.Join(",", Cards);
+        }
+    }
+
+```
+The score is calculated by using System.LINQ - a useful toolset, that in itself is a collection of extension methods.
+Essentially this code will take a list (or enumeration) of cards, group them by their Suit, order the groups descending by their summarized Thirty-One point score, take the first (with the highest score) and return that.
+
+LINQ is a fairly advanced topic, and we will get back to it later. 
+If you want to learn more about LINQ now, you can get an in-depth course [here](https://www.codingame.com/playgrounds/213/using-c-linq---a-practical-overview/welcome).
+
+### The Game
+
+```csharp
+    public enum GameState
+    {
+        WaitingToStart,
+        InProgress,
+        GameOver
+    }
+```
+
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Game.cs).
+
+### The Base Player
+
+```csharp
+    public enum PlayerAction
+    {
+        TakeFromDeck,
+        TakeFromTable,
+        Knock
+    }
+```
+
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Player.cs).
+
+### The Computer Player
+
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ComputerPlayer.cs).
+
+### The Console Player
+
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ConsolePlayer.cs).
+
+### Putting it all together and trying the game
+
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Program.cs).
+
+
+
+
+
 
