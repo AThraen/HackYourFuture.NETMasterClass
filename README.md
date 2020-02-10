@@ -39,7 +39,7 @@ First Lesson Goals:
 * Working with visual studio and compiling and debugging code
 * Exercises: Building a simple Console application, with the basics of the card game mentioned as "The Project".
 
-Find all material for the first lesson [here](Week1).
+**Find all material for the first lesson [here](Week1).**
 
 ### Second lesson
 More in-depth with c# and .NET basics.

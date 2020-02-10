@@ -23,7 +23,7 @@ namespace ThirtyOne
             bool isGameOver = false;
             while (!isGameOver)
             {
-                Console.WriteLine($"{G.Players[G.CurrentTurn].Name} turn!");
+                Console.WriteLine($"{G.CurrentPlayer.Name} turn!");
                 isGameOver = G.NextTurn();
             }
             Console.WriteLine("----------------------------------------------------------------------------");

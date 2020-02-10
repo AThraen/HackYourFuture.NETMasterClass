@@ -35,9 +35,9 @@ namespace ThirtyOne.Models
                 DrawFromDeck(g);
             }
             Console.WriteLine("You drew a card. Your hand: ");
-            foreach (var c in Hand)
+            for(int i=0;i<Hand.Count;i++)
             {
-                Console.WriteLine("\t1\t" + c.ToString());
+                Console.WriteLine("\t"+(i+1).ToString()+"\t" + Hand[i].ToString());
             }
 
             Console.WriteLine("Which card to drop? (1-4)");

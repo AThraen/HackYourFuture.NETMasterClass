@@ -149,8 +149,20 @@ Essentially this code will take a list (or enumeration) of cards, group them by 
 LINQ is a fairly advanced topic, and we will get back to it later. 
 If you want to learn more about LINQ now, you can get an in-depth course [here](https://www.codingame.com/playgrounds/213/using-c-linq---a-practical-overview/welcome).
 
+
 ### The Game
 
+Now, the time has come for the class that models the game itself.
+This class will be responsible for all the elements regarding the game, such as keeping track of the deck, the table, and the players - as well as identify when we have a winner and the game is over.
+
+**Properties:**
+*) Deck Deck, yes - let's just call the deck "Deck".
+*) List<Card> Table, represents the collection of cards placed face-up on the table.
+*) List<Player> Players, the list of players active in the game. In this first version we will just have 2 (you and the computer), but potentially it could have between 2 and 7 players. We don't have the Player class yet, but will create that next so let's just go ahead and make this.
+*) int CurrentTurn, the index of the Player (from the above list) who's turn it is. Start with 0. 
+*) Player CurrentPlayer, a simple Get property that basically returns the current player from Players[CurrentTurn].
+*) Player Winner, If the game is over, then this can hold the winner.
+*) GameState State. A game can have 3 possible states - Not started, In Progress and Game Over. An enum would be ideal to hold this state:
 ```csharp
     public enum GameState
     {
@@ -160,30 +172,212 @@ If you want to learn more about LINQ now, you can get an in-depth course [here](
     }
 ```
 
-See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Game.cs).
+**Methods:**
+*) Game(), Constructor - creates the different lists and sets startup values. You can also use this to initialize a random generator. In the sample code I suggest a constructor overload that creates players and starts the game.
+*) void StartGame(), Initializes the deck, shuffles, and does the initial dealing as well as marking the game as being InProgress.
+*) bool EvaluateIfGameOver(bool called), evaluates if the game is over and returns true if it is - as well as updates the state and winner. A game is over if a player has 31, or if a full round has been completed after a player knocked or called. The logic here is easiest done with some LINQ again:
+```csharp
+        public bool EvaluateIfGameOver(bool called)
+        {
+            var winPlayer = (called) ?
+                Players.Where(p => p.Hand.Count == 3).OrderByDescending(p => p.Hand.CalculateScore()).First() //The game has been called, highest score is the winner
+                : Players.Where(p => p.Hand.Count == 3 && p.Hand.CalculateScore() == 31).FirstOrDefault(); //Game has not been called, but a player has 31 and wins.
+
+            if (winPlayer != null)
+            {
+                this.Winner = winPlayer;
+                this.State = GameState.GameOver;
+                return true;
+            }
+            return false;
+        }
+```
+*)bool NextTurn(), executes the current turn, evaluates if the game is over and otherwise progresses to next turn. Returns true if game is over.
+```csharp
+public bool NextTurn()
+        {
+            //Ask player to do their turn
+            CurrentPlayer.Turn(this);
+
+            if (EvaluateIfGameOver(false))
+            {
+                //Player won, report
+                return true;
+            }
+
+            //Move to the next player
+            CurrentTurn++;
+            if (CurrentTurn >= Players.Count) CurrentTurn = 0;
+            if (CurrentPlayer.HasKnocked)
+            {
+                //Next player had already knocked - let's evaluate the call
+                EvaluateIfGameOver(true);
+                //Game over!
+                return true;
+            }
+
+            if (Deck.CardsLeft == 0)
+            {
+                //If there's no more cards in the deck, let's take those from the table
+                Deck.Cards.AddRange(Table);
+                Table.Clear();
+            }
+
+            if (CurrentPlayer is ComputerPlayer) return NextTurn(); //If the next player is the computer, execute that turn right away.
+            else return false;
+        }
+```
+
+Note: You might wonder why your extension method 'CalculateScore' doesn't get recognized. It could be because it is in a different namespace than where you are implementing this logic. Make sure to add a ```using ThirtyOne.Helpers;``` statement to the top of your file if that's the namespace it is in.
+
+See full sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Game.cs).
+
 
 ### The Base Player
+We have multiple different types of players. For starters we both have the computer player and the human player using the console. However, they do share some common characteristics, which we will set in a base class.
+Then, we will have all players inherit the base class - which means they will get all of the functionality of the base class - and then be able to extend on it.
+By marking the base class ```public abstract class Player``` we ensure that it cannot be instantiated by itself, since it's abstract. Only concrete (non-abstract) children of it can be instantiated.
 
-```csharp
-    public enum PlayerAction
-    {
-        TakeFromDeck,
-        TakeFromTable,
-        Knock
-    }
-```
+**Properties**
+*) List<Card> Hand, the cards the player is currently holding in his hand
+*) string Name, the name of the player
+*) bool HasKnocked, this should be true, if a player knocks (calls the game). 
+
+**Methods**
+*) Player() and Player(string name), 2 constructors that can initialize the player.
+*) abstract void Turn(Game g), the method all children must implement - where they put their players logic for when it's the players turn
+*) DrawFromDeck(Game g), DrawFromTable(Game g), DropCard(Game g, int Index), suggested helper methods for performing the various actions a player can do.
+
+When it's a players turn, the game will call 'Turn(Game g)' method. This can then complete the players turn - typically a turn is either a Knock, or picking up a card and then dropping another card.
 
 See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Player.cs).
 
 ### The Computer Player
 
-See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ComputerPlayer.cs).
+The computer player is where you put your logic to determine which actions the computer player should take when it is in turn.
+Since we want to inherit Player, declare it like this: ```public class ComputerPlayer : Player```.
+
+I like to add a Random generator as a member, so we get some randomness in it's actions. A good place to do that is in the constructor.
+
+There are many ways to write the logic for it. The very simplest solution could be to always draw a card from deck and then drop a random card from your hand. This would however make a pretty terrible player.
+I have some suggested logic here, that will work a bit better. 
+```csharp
+public override void Turn(Game g)
+        {
+            //First, decide on action: Draw from deck, draw from table, knock
+            if (Hand.CalculateScore() > 25 && !g.Players.Any(p => p.HasKnocked) && _random.Next(3) == 1)
+            {
+                Console.WriteLine($"{Name} knocks on the table");
+                //Knock
+                this.HasKnocked = true;
+                return;
+            }
+            else
+            {
+                //Decide if I should draw from table or from deck
+                if (g.Table.Any() && g.Table.Last().Value >= 10 && _random.Next(2) == 1)
+                {
+                    Console.WriteLine($"{Name} draws a card from the table");
+                    DrawFromTable(g);
+                }
+                else
+                {
+                    Console.WriteLine($"{Name} draws a card from the deck");
+                    DrawFromDeck(g);
+                }
+
+                //Drop card that'll give highest score
+                List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
+                for(int i=0;i<Hand.Count;i++)
+                {
+                    Console.WriteLine("\t"+(i+1).ToString()+"\t" + Hand[i].ToString());
+                }
+                int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
+                Console.WriteLine($"{Name} drops {Hand[idx].ToString()}");
+                DropCard(g, idx);
+
+            }
+        }
+```
+Note, that I have started writing output of the actions directly to the Console. Usually it would be much preferred to keep the user interaction separate from the logic, but since this is just a first step, it's ok for now.
+
+See full sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ComputerPlayer.cs).
+
 
 ### The Console Player
 
+Similarly to the computer player, the Console Player also inherits from the Player - and also here have I chosen to implement the console user interaction directly.
+For this, we can use static methods on the Console object. 
+We'll use ```Console.WriteLine(string line)``` to write a line to the console, and ```string Console.ReadLine()``` to read a line of user input.
+First, we'll present the user with information about what they have on their hand currently, and which card is on the table. Then they can decide if they want to draw from the table, from the deck or simply knock.
+If they draw a card, they then need to decide which card to drop. 
+
+```csharp
+public override void Turn(Game g)
+        {
+            Console.WriteLine("Your turn. Your hand: ");
+            foreach (var c in Hand)
+            {
+                Console.WriteLine("\t" + c.ToString());
+            }
+            Console.WriteLine($"Hand score: {Hand.CalculateScore()}\n");
+            if (g.Table.Count > 0)
+            {
+                Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D) or Call/Knock (C)?");
+                var c = Console.ReadLine().ToUpper();
+                if (c == "T") DrawFromTable(g);
+                else if (c == "D") DrawFromDeck(g);
+                else
+                {
+                    this.HasKnocked = true;
+                    return;
+                }
+            }
+            else
+            {
+                DrawFromDeck(g);
+            }
+            Console.WriteLine("You drew a card. Your hand: ");
+            foreach (var c in Hand)
+            {
+                Console.WriteLine("\t1\t" + c.ToString());
+            }
+
+            Console.WriteLine("Which card to drop? (1-4)");
+            string input = Console.ReadLine();
+            int action = int.Parse(input);
+            DropCard(g, action - 1);
+            Console.WriteLine("Your score: " + Hand.CalculateScore());
+        }
+```
+
 See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ConsolePlayer.cs).
 
+
 ### Putting it all together and trying the game
+Finally, it's time to put all the pieces together and try the game.
+In the Program.Main class, you can add the basic logic needed for this.
+We want to:
+1) Create a game with a computer player named and a console player.
+2) Start a loop until the game is over, where we write who's turn it is - and then executes the turn.
+3) When game is over, output who the winner is.
+
+```csharp
+            //Game implementation
+            Console.WriteLine("Let's play 31!");
+            ComputerPlayer cp = new ComputerPlayer("Computer");
+            Game G = new Game(r, cp, new ConsolePlayer("You"));
+            bool isGameOver = false;
+            while (!isGameOver)
+            {
+                Console.WriteLine($"{G.CurrentPlayer.Name} turn!");
+                isGameOver = G.NextTurn();
+            }
+            Console.WriteLine("----------------------------------------------------------------------------");
+            Console.WriteLine($"--- GAME OVER, {G.Winner.Name} WON WITH {G.Winner.Hand.ToListString()} ---");
+            Console.ReadLine();
+```
+
 
 See sample code [here](Solution/ThirtyOne/ThirtyOne/Program.cs).
 

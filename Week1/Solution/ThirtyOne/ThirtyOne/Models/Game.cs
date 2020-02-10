@@ -82,18 +82,16 @@ namespace ThirtyOne.Models
         public bool EvaluateIfGameOver(bool called)
         {
             var winPlayer = (called) ?
-                Players.Where(p => p.Hand.Count == 3).OrderByDescending(p => p.Hand.CalculateScore()).First()
-                : Players.Where(p => p.Hand.Count == 3 && p.Hand.CalculateScore() == 31).FirstOrDefault();
+                Players.Where(p => p.Hand.Count == 3).OrderByDescending(p => p.Hand.CalculateScore()).First() //The game has been called, highest score is the winner
+                : Players.Where(p => p.Hand.Count == 3 && p.Hand.CalculateScore() == 31).FirstOrDefault(); //Game has not been called, but a player has 31 and wins.
 
             if (winPlayer != null)
             {
-                //We have a winner with 31
                 this.Winner = winPlayer;
                 this.State = GameState.GameOver;
                 return true;
             }
             return false;
-
         }
 
         /// <summary>
@@ -136,19 +134,14 @@ namespace ThirtyOne.Models
         /// <summary>
         /// Deals initial cards to players
         /// </summary>
-        public void InitialDeal()
+        protected void InitialDeal()
         {
-            Winner = null;
-            CurrentTurn = 0;
             //Deal
             foreach (var p in Players)
             {
                 for (int i = 0; i < 3; i++) p.Hand.Add(Deck.DrawCard());
             }
             Table.Add(Deck.DrawCard());
-
-            State = GameState.InProgress;
-
         }
 
         /// <summary>
@@ -156,11 +149,12 @@ namespace ThirtyOne.Models
         /// </summary>
         public void StartGame()
         {
-
             Deck = new Deck();
             Deck.Initialize();
             Deck.Shuffle(_random);
             Table = new List<Card>();
+            Winner = null;
+            CurrentTurn = 0;
             InitialDeal();
             State = GameState.InProgress;
         }
