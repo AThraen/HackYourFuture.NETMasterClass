@@ -71,14 +71,14 @@ A list is essentially an array, that we can easily add or remove items to/from.
 To get a list particularly suited for Cards, we will use what's called Generics - a way to induce an object prepared for it, with other types.
 
 **Properties:**
-*)List<Card> Cards, the list of cards. 
-*)int CardsLeft, a get property with a number of how many cards are left
+* List<Card> Cards, the list of cards. 
+* int CardsLeft, a get property with a number of how many cards are left
 
 **Methods:**
-*) Deck(), Constructor, Purpose is to ensure the members are initialized and ready for use.
-*) void Initialize(), Prepares the deck and creates the cards
-*) void Shuffle(), Shuffles the deck by taking each card position and moving it to a random new position.
-*) Card DrawCard(), Draws a card from the top of the deck and returns it.
+*  Deck(), Constructor, Purpose is to ensure the members are initialized and ready for use.
+*  void Initialize(), Prepares the deck and creates the cards
+*  void Shuffle(), Shuffles the deck by taking each card position and moving it to a random new position.
+*  Card DrawCard(), Draws a card from the top of the deck and returns it.
 
 You can find sample code [here](Solution/ThirtyOne/ThirtyOne/Models/Deck.cs).
 
@@ -149,6 +149,8 @@ Essentially this code will take a list (or enumeration) of cards, group them by 
 LINQ is a fairly advanced topic, and we will get back to it later. 
 If you want to learn more about LINQ now, you can get an in-depth course [here](https://www.codingame.com/playgrounds/213/using-c-linq---a-practical-overview/welcome).
 
+See sample code [here](Solution/ThirtyOne/ThirtyOne/Helpers/CardListExtensions.cs).
+
 
 ### The Game
 
@@ -156,13 +158,13 @@ Now, the time has come for the class that models the game itself.
 This class will be responsible for all the elements regarding the game, such as keeping track of the deck, the table, and the players - as well as identify when we have a winner and the game is over.
 
 **Properties:**
-*) Deck Deck, yes - let's just call the deck "Deck".
-*) List<Card> Table, represents the collection of cards placed face-up on the table.
-*) List<Player> Players, the list of players active in the game. In this first version we will just have 2 (you and the computer), but potentially it could have between 2 and 7 players. We don't have the Player class yet, but will create that next so let's just go ahead and make this.
-*) int CurrentTurn, the index of the Player (from the above list) who's turn it is. Start with 0. 
-*) Player CurrentPlayer, a simple Get property that basically returns the current player from Players[CurrentTurn].
-*) Player Winner, If the game is over, then this can hold the winner.
-*) GameState State. A game can have 3 possible states - Not started, In Progress and Game Over. An enum would be ideal to hold this state:
+*  Deck Deck, yes - let's just call the deck "Deck".
+*  List<Card> Table, represents the collection of cards placed face-up on the table.
+*  List<Player> Players, the list of players active in the game. In this first version we will just have 2 (you and the computer), but potentially it could have between 2 and 7 players. We don't have the Player class yet, but will create that next so let's just go ahead and make this.
+*  int CurrentTurn, the index of the Player (from the above list) who's turn it is. Start with 0. 
+*  Player CurrentPlayer, a simple Get property that basically returns the current player from Players[CurrentTurn].
+*  Player Winner, If the game is over, then this can hold the winner.
+*  GameState State. A game can have 3 possible states - Not started, In Progress and Game Over. An enum would be ideal to hold this state:
 ```csharp
     public enum GameState
     {
@@ -173,9 +175,9 @@ This class will be responsible for all the elements regarding the game, such as 
 ```
 
 **Methods:**
-*) Game(), Constructor - creates the different lists and sets startup values. You can also use this to initialize a random generator. In the sample code I suggest a constructor overload that creates players and starts the game.
-*) void StartGame(), Initializes the deck, shuffles, and does the initial dealing as well as marking the game as being InProgress.
-*) bool EvaluateIfGameOver(bool called), evaluates if the game is over and returns true if it is - as well as updates the state and winner. A game is over if a player has 31, or if a full round has been completed after a player knocked or called. The logic here is easiest done with some LINQ again:
+*  Game(), Constructor - creates the different lists and sets startup values. You can also use this to initialize a random generator. In the sample code I suggest a constructor overload that creates players and starts the game.
+*  void StartGame(), Initializes the deck, shuffles, and does the initial dealing as well as marking the game as being InProgress.
+*  bool EvaluateIfGameOver(bool called), evaluates if the game is over and returns true if it is - as well as updates the state and winner. A game is over if a player has 31, or if a full round has been completed after a player knocked or called. The logic here is easiest done with some LINQ again:
 ```csharp
         public bool EvaluateIfGameOver(bool called)
         {
@@ -192,7 +194,7 @@ This class will be responsible for all the elements regarding the game, such as 
             return false;
         }
 ```
-*)bool NextTurn(), executes the current turn, evaluates if the game is over and otherwise progresses to next turn. Returns true if game is over.
+* bool NextTurn(), executes the current turn, evaluates if the game is over and otherwise progresses to next turn. Returns true if game is over.
 ```csharp
 public bool NextTurn()
         {
@@ -239,14 +241,14 @@ Then, we will have all players inherit the base class - which means they will ge
 By marking the base class ```public abstract class Player``` we ensure that it cannot be instantiated by itself, since it's abstract. Only concrete (non-abstract) children of it can be instantiated.
 
 **Properties**
-*) List<Card> Hand, the cards the player is currently holding in his hand
-*) string Name, the name of the player
-*) bool HasKnocked, this should be true, if a player knocks (calls the game). 
+* List<Card> Hand, the cards the player is currently holding in his hand
+* string Name, the name of the player
+* bool HasKnocked, this should be true, if a player knocks (calls the game). 
 
 **Methods**
-*) Player() and Player(string name), 2 constructors that can initialize the player.
-*) abstract void Turn(Game g), the method all children must implement - where they put their players logic for when it's the players turn
-*) DrawFromDeck(Game g), DrawFromTable(Game g), DropCard(Game g, int Index), suggested helper methods for performing the various actions a player can do.
+* Player() and Player(string name), 2 constructors that can initialize the player.
+* abstract void Turn(Game g), the method all children must implement - where they put their players logic for when it's the players turn
+* DrawFromDeck(Game g), DrawFromTable(Game g), DropCard(Game g, int Index), suggested helper methods for performing the various actions a player can do.
 
 When it's a players turn, the game will call 'Turn(Game g)' method. This can then complete the players turn - typically a turn is either a Knock, or picking up a card and then dropping another card.
 
@@ -358,9 +360,9 @@ See sample code [here](Solution/ThirtyOne/ThirtyOne/Models/ConsolePlayer.cs).
 Finally, it's time to put all the pieces together and try the game.
 In the Program.Main class, you can add the basic logic needed for this.
 We want to:
-1) Create a game with a computer player named and a console player.
-2) Start a loop until the game is over, where we write who's turn it is - and then executes the turn.
-3) When game is over, output who the winner is.
+1. Create a game with a computer player named and a console player.
+2. Start a loop until the game is over, where we write who's turn it is - and then executes the turn.
+3. When game is over, output who the winner is.
 
 ```csharp
             //Game implementation
