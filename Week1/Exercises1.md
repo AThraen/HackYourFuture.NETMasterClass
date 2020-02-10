@@ -11,6 +11,10 @@ Name your project (and solution) ThirtyOne and select a location to store it on 
 Click 'next' and you are ready to get started.
 Congratulations, you now have your very own Console Project  and you can even run it and see a nice "Hello World" text.
 
+To build the project we are doing this week, we'll need the following classes:
+![](Diagram.png)
+
+
 ### Creating the first model: The Card
 Now, that we have the project created, we should start to build our world by addings models - that is class definitions of the objects we will use.
 It's a good idea to *create these in a new folder called 'Models'*. You can create this in the solution explorer, under your project root.
