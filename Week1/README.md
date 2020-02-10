@@ -2,7 +2,7 @@
 
 Here you can find all the materials you will need for Week 1.
 
-#### [Slides])(Slides1.pdf)
+#### [Slides](Slides1.pdf)
 
 #### [Exercises](Exercises1.md)
 
