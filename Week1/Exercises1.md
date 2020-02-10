@@ -12,7 +12,7 @@ Click 'next' and you are ready to get started.
 Congratulations, you now have your very own Console Project  and you can even run it and see a nice "Hello World" text.
 
 To build the project we are doing this week, we'll need the following classes:
-![](Diagram.png)
+![](Diagram.PNG)
 
 
 ### Creating the first model: The Card
