@@ -10,7 +10,7 @@ namespace ThirtyOne
         static void Main(string[] args)
         {
             //Initial test
-            Deck d = new Deck();
+            Deck deck = new Deck();
             d.Initialize();
             Random r = new Random();
             d.Shuffle(r);
