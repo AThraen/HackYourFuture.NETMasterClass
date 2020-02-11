@@ -6,30 +6,29 @@ namespace ThirtyOne
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             //Initial test
-            Deck d = new Deck();
-            d.Initialize();
-            Random r = new Random();
-            d.Shuffle(r);
-            Card c = d.DrawCard();
+            Deck deck = new Deck();
+            deck.Initialize();
+            Random randomNumberGenerator = new Random();
+            deck.Shuffle(randomNumberGenerator);
+            Card card = deck.DrawCard();
 
             //Game implementation
             Console.WriteLine("Let's play 31!");
-            ComputerPlayer cp = new ComputerPlayer("Computer");
-            Game G = new Game(r, cp, new ConsolePlayer("You"));
+            ComputerPlayer computerPlayer = new ComputerPlayer("Computer");
+            Game game = new Game(randomNumberGenerator, computerPlayer, new ConsolePlayer("You"));
             bool isGameOver = false;
             while (!isGameOver)
             {
-                Console.WriteLine($"{G.CurrentPlayer.Name} turn!");
-                isGameOver = G.NextTurn();
+                Console.WriteLine($"{game.CurrentPlayer.Name} turn!");
+                isGameOver = game.NextTurn();
             }
-            Console.WriteLine("----------------------------------------------------------------------------");
-            Console.WriteLine($"--- GAME OVER, {G.Winner.Name} WON WITH {G.Winner.Hand.ToListString()} ---");
-            Console.ReadLine();
 
+            Console.WriteLine("----------------------------------------------------------------------------");
+            Console.WriteLine($"--- GAME OVER, {game.Winner.Name} WON WITH {game.Winner.Hand.ToListString()} ---");
+            Console.ReadLine();
         }
     }
 }

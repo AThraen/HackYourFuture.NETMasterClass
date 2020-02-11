@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ThirtyOne.Models
 {
@@ -12,14 +11,11 @@ namespace ThirtyOne.Models
         /// <summary>
         /// The list cards
         /// </summary>
-        public List<Card> Cards { get; set; }
+        public List<Card> Cards { get; }
 
         public int CardsLeft
         {
-            get
-            {
-                return Cards.Count;
-            }
+            get { return Cards.Count; }
         }
 
         /// <summary>
@@ -27,12 +23,12 @@ namespace ThirtyOne.Models
         /// </summary>
         public void Initialize()
         {
-            foreach (Suits suit in (Suits[])Enum.GetValues(typeof(Suits)))
+            foreach (Suits suit in (Suits[]) Enum.GetValues(typeof(Suits)))
             {
                 for (int i = 1; i < 14; i++)
                 {
-                    Card c = new Card() { Rank = i, Suit = suit };
-                    Cards.Add(c);
+                    Card card = new Card() {Rank = i, Suit = suit};
+                    Cards.Add(card);
                 }
             }
         }
@@ -44,22 +40,23 @@ namespace ThirtyOne.Models
         public Card DrawCard()
         {
             if (Cards.Count == 0) return null;
-            Card c = Cards[0];
+            Card card = Cards[0];
             Cards.RemoveAt(0);
-            return c;
+            return card;
         }
 
         /// <summary>
         /// Shuffle the cards
         /// </summary>
-        /// <param name="R"></param>
-        public void Shuffle(Random R)
+        /// <param name="randomNumberGenerator"></param>
+        public void Shuffle(Random randomNumberGenerator)
         {
             for (int i = 0; i < Cards.Count; i++)
             {
                 int from = i;
-                int to = R.Next(Cards.Count);
+                int to = randomNumberGenerator.Next(Cards.Count);
                 Card c = Cards[to];
+
                 Cards[to] = Cards[from];
                 Cards[from] = c;
             }

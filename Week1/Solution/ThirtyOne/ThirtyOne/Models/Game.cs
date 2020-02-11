@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ThirtyOne.Helpers;
 
 namespace ThirtyOne.Models
 {
     public class Game
     {
-
         /// <summary>
         /// Deck of cards
         /// </summary>
@@ -39,7 +37,6 @@ namespace ThirtyOne.Models
         /// </summary>
         private Random _random;
 
-
         /// <summary>
         /// The Winner
         /// </summary>
@@ -58,20 +55,17 @@ namespace ThirtyOne.Models
         /// <summary>
         /// Constructor that starts game right away
         /// </summary>
-        /// <param name="R"></param>
-        /// <param name="Players"></param>
-        public Game(Random R, params Player[] Players) : this()
+        /// <param name="randomNumberGenerator"></param>
+        /// <param name="players"></param>
+        public Game(Random randomNumberGenerator, params Player[] players) : this()
         {
-            this.Players = Players.ToList();
+            Players = players.ToList();
             StartGame();
         }
 
         public Player CurrentPlayer
         {
-            get
-            {
-                return Players[CurrentTurn];
-            }
+            get { return Players[CurrentTurn]; }
         }
 
         /// <summary>
@@ -81,16 +75,18 @@ namespace ThirtyOne.Models
         /// <returns>returns true if game over, otherwise false</returns>
         public bool EvaluateIfGameOver(bool called)
         {
-            var winPlayer = (called) ?
-                Players.Where(p => p.Hand.Count == 3).OrderByDescending(p => p.Hand.CalculateScore()).First() //The game has been called, highest score is the winner
-                : Players.Where(p => p.Hand.Count == 3 && p.Hand.CalculateScore() == 31).FirstOrDefault(); //Game has not been called, but a player has 31 and wins.
+            var winPlayer = (called)
+                ? Players.Where(p => p.Hand.Count == 3).OrderByDescending(p => p.Hand.CalculateScore())
+                    .First() //The game has been called, highest score is the winner
+                : Players.FirstOrDefault(p => p.Hand.Count == 3 && p.Hand.CalculateScore() == 31); //Game has not been called, but a player has 31 and wins.
 
             if (winPlayer != null)
             {
-                this.Winner = winPlayer;
-                this.State = GameState.GameOver;
+                Winner = winPlayer;
+                State = GameState.GameOver;
                 return true;
             }
+
             return false;
         }
 
@@ -111,7 +107,12 @@ namespace ThirtyOne.Models
 
             //Move to the next player
             CurrentTurn++;
-            if (CurrentTurn >= Players.Count) CurrentTurn = 0;
+
+            if (CurrentTurn >= Players.Count)
+            {
+                CurrentTurn = 0;
+            }
+            
             if (CurrentPlayer.HasKnocked)
             {
                 //Next player had already knocked - let's evaluate the call
@@ -127,38 +128,42 @@ namespace ThirtyOne.Models
                 Table.Clear();
             }
 
-            if (CurrentPlayer is ComputerPlayer) return NextTurn(); //If the next player is the computer, execute that turn right away.
-            else return false;
+            if (CurrentPlayer is ComputerPlayer)
+            {
+                return NextTurn(); //If the next player is the computer, execute that turn right away.
+            }
+            
+            return false;
         }
 
         /// <summary>
         /// Deals initial cards to players
         /// </summary>
-        protected void InitialDeal()
+        private void InitialDeal()
         {
             //Deal
             foreach (var p in Players)
             {
                 for (int i = 0; i < 3; i++) p.Hand.Add(Deck.DrawCard());
             }
+
             Table.Add(Deck.DrawCard());
         }
 
         /// <summary>
         /// Starts the game
         /// </summary>
-        public void StartGame()
+        private void StartGame()
         {
             Deck = new Deck();
+            Table = new List<Card>();
+            
             Deck.Initialize();
             Deck.Shuffle(_random);
-            Table = new List<Card>();
             Winner = null;
             CurrentTurn = 0;
             InitialDeal();
             State = GameState.InProgress;
         }
-
-
     }
 }

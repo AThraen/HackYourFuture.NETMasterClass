@@ -1,49 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ThirtyOne.Helpers;
 
 namespace ThirtyOne.Models
 {
     public class ConsolePlayer : Player
     {
-        public ConsolePlayer(string Name) : base(Name) { }
+        public ConsolePlayer(string name) : base(name)
+        {
+        }
 
-        public override void Turn(Game g)
+        public override void Turn(Game game)
         {
             Console.WriteLine("Your turn. Your hand: ");
-            foreach (var c in Hand)
+
+            foreach (var card in Hand)
             {
-                Console.WriteLine("\t" + c.ToString());
+                Console.WriteLine("\t" + card.ToString());
             }
+
             Console.WriteLine($"Hand score: {Hand.CalculateScore()}\n");
-            if (g.Table.Count > 0)
+
+            if (game.Table.Count > 0)
             {
-                Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D) or Call/Knock (C)?");
-                var c = Console.ReadLine().ToUpper();
-                if (c == "T") DrawFromTable(g);
-                else if (c == "D") DrawFromDeck(g);
-                else
+                Console.WriteLine("On the table there is " + game.Table.Last().ToString() +
+                                  ". Do you want to draw from the Table (T) or the Deck (D) or Call/Knock (C)?");
+                var key = Console.ReadLine().ToUpper();
+
+                switch (key)
                 {
-                    this.HasKnocked = true;
-                    return;
+                    case "T":
+                        DrawFromTable(game);
+                        break;
+                    
+                    case "D":
+                        DrawFromDeck(game);
+                        break;
+                    
+                    default:
+                        HasKnocked = true;
+                        return;
                 }
             }
             else
             {
-                DrawFromDeck(g);
+                DrawFromDeck(game);
             }
+
             Console.WriteLine("You drew a card. Your hand: ");
-            for(int i=0;i<Hand.Count;i++)
+
+            for (int i = 0; i < Hand.Count; i++)
             {
-                Console.WriteLine("\t"+(i+1).ToString()+"\t" + Hand[i].ToString());
+                Console.WriteLine("\t" + (i + 1).ToString() + "\t" + Hand[i].ToString());
             }
 
             Console.WriteLine("Which card to drop? (1-4)");
+
             string input = Console.ReadLine();
             int action = int.Parse(input);
-            DropCard(g, action - 1);
+
+            DropCard(game, action - 1);
             Console.WriteLine("Your score: " + Hand.CalculateScore());
         }
     }
