@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ThirtyOne.Models
+﻿namespace ThirtyOne.Models
 {
     /// <summary>
     /// A playing card
@@ -26,7 +22,7 @@ namespace ThirtyOne.Models
         {
             get
             {
-                return (Rank == 1) ? 11 : 
+                return (Rank == 1) ? 11 :
                     (Rank >= 10 && Rank < 14) ? 10 : Rank;
             }
         }
@@ -37,10 +33,7 @@ namespace ThirtyOne.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return Rank.ToString() + " of " + Suit.ToString();
+            return Rank + " of " + Suit;
         }
-
-
     }
-
 }
