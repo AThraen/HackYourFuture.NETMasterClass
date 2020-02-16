@@ -57,7 +57,7 @@ Second Lesson Goals:
 * Use Restsharp or SharpZipLib or similar package.
 * Exercises & homework : Extract game logic from the earlier developed Console App into a separate library and rewrite the console to use that. Extend game logic with persistence (Json files).
 
-Find all material for the second lesson [here](Week2).
+**Find all material for the second lesson [here](Week2).**
 
 ### Third lesson
 MVC and Web introduction.

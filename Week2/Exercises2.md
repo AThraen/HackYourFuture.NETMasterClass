@@ -78,15 +78,42 @@ Of course we also need to update the logic in the program to output the computer
 
 ### Adding a Nuget reference
 
+Nuget is the .NET version of NPM. It's both a technology and a great ecosystem of packages that are shared.
+Most you'll find in the Nuget.org feed, but it's also very normal for organisations to create their own nuget package sources.
+
+A nuget file is essentially a zip file (with the extension .nupck). You can find it in the Nuget browser in visual studio and then add it to the project.
+A nuget can consist of:
+* Files (source-code, images, views, and so on) that are included in the project
+* Assemblies (compiled libraries, added to your references)
+* Configuration modifications
+* Various scripts that run on install/uninstall
+
+We are going to add the ability to our Game class to serialize / deserialize a game state into Json, and for that we will use one of the most popular libraries out there.
+
+Right-click on your project references and select 'Manage Nuget Packages'.
+
 ![](ManageNuget.png)
 
+Now, use the Nuget Browser to find the latest version of Newtonsoft.Json and install it.
 
 ![](NugetBrowser.png)
+
+It's that easy to use an external package, and there are thousands available for anything imaginable.
 
 
 ### Serializing and deserializing game state
 
-Methods for it, and JsonIgnores
+When we play our game in our Console application, we typically run with the game state in memory. We'll create one Game object in memory, and then use it.
+When the console program ends, the game will be removed from memory and not persisted, but that's fine - because typically we are done with it at this point.
+
+However, next week we'll start to build a web version of the same game, and then it gets a little bit trickier.
+To a web-server, every new call from a client is typically an independent action and we can't be sure that states stored in memory won't disappear.
+This means that we'll need to put it somewhere - and since it's easier to deal with a string, we will need to serialize our game state.
+Then, we potentially can put it in a cookie, on disk, in a cloud storage, in a database or in hidden form parameters.
+
+Newtonsoft.Json has an object with the static methods string JsonConvert.SerializeObject(object), and similarly DeSerializeObject().
+We will basically just have to implement methods that wraps them.
+First, an instance method to serialize the current game:
 
 ```csharp
         public string SerializeGame()
@@ -98,6 +125,7 @@ Methods for it, and JsonIgnores
             return JsonConvert.SerializeObject(this, jsonSerializerSettings);
         }
 ```
+We'll also need the method to deserialize the game, but since we can't be sure we have an instantiated game, when we have to deserialize it, we will make it static.
 
 ```csharp
         public static Game DeserializeGame(string json)
@@ -111,10 +139,11 @@ Methods for it, and JsonIgnores
 ```
 
 
+### Trying it out in the Program
 
-Trying it out in the Program
-
-
+Finally, we'll add logic to our Program class to save the game whenever there is a change to the game state. 
+We can save it to disk using ```File.WriteAllText(filename,text)``` and in the same way add logic to check if there is a file when we start, so we can continue a previously started game.
+For the sake of completion you can also use ```File.Delete(filename)``` after game over, to clean up the file.
 
 
 See sample code [here](Solution/ThirtyOne/ThirtyOne/Program.cs).

@@ -1,6 +1,6 @@
 # HackYourFuture .NET Masterclass - Week 2
 
-Here you can find all the materials you will need for Week 1.
+Here you can find all the materials you will need for Week 2.
 
 #### [Slides](Slides2.pdf)
 
