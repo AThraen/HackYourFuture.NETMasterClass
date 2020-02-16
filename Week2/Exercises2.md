@@ -138,6 +138,10 @@ We'll also need the method to deserialize the game, but since we can't be sure w
         }
 ```
 
+### Optimizing serialized strings
+
+You might not want to include everything in the serialized string - for instance there is no reason to serialize all the properties that are generated dynamically. Go through your code and add the attribute [JsonIgnore] before the properties you don't want to include.
+
 
 ### Trying it out in the Program
 
