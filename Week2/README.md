@@ -21,3 +21,9 @@ When you have committed your solution, let teacher/mentors know in slack and we 
 
 ### Additional reading
 
+[An introduction to NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget)
+
+[NuGet.Org - Search packages](https://www.nuget.org/)
+
+[Build a .NET Standard library in Visual Studio](https://docs.microsoft.com/en-us/dotnet/core/tutorials/library-with-visual-studio?tabs=csharp)
+
