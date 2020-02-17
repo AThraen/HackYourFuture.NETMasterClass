@@ -296,7 +296,7 @@ public override void Turn(Game g)
                 List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
                 for(int i=0;i<Hand.Count;i++)
                 {
-                    Console.WriteLine("\t"+(i+1).ToString()+"\t" + Hand[i].ToString());
+                    lst.Add(new Tuple<Card, int>(card, Hand.Except(new Card[] {card}).CalculateScore()));
                 }
                 int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
                 Console.WriteLine($"{Name} drops {Hand[idx].ToString()}");
