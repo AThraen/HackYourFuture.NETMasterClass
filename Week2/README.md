@@ -10,8 +10,7 @@ Here you can find all the materials you will need for Week 2.
 An example solution to the exercises if you get stuck or fall behind. Try to make your own solution first, following the instructions above.
 
 #### Video
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=KJjBvZ1phTI
-" target="_blank"><img src="http://img.youtube.com/vi/KJjBvZ1phTI/0.jpg" 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=6GuyP0HaoQA" target="_blank"><img src="http://img.youtube.com/vi/6GuyP0HaoQA/0.jpg" 
 alt="Week 1 video" width="240" height="180" border="10" /></a>
 
 ### Homework

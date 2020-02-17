@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThirtyOne", "ThirtyOne\ThirtyOne.csproj", "{CA3CCE82-6D74-43AE-ABDB-A3C7C9351509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirtyOne.Shared", "ThirtyOne.Shared\ThirtyOne.Shared.csproj", "{AF091937-28EE-4787-AA4A-D912BE4DAB66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThirtyOne.Shared", "ThirtyOne.Shared\ThirtyOne.Shared.csproj", "{AF091937-28EE-4787-AA4A-D912BE4DAB66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirtyOne.Web", "ThirtyOne.Web\ThirtyOne.Web.csproj", "{8F5B37A8-4AFE-4336-9B14-7B86E2ABFC12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{AF091937-28EE-4787-AA4A-D912BE4DAB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF091937-28EE-4787-AA4A-D912BE4DAB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF091937-28EE-4787-AA4A-D912BE4DAB66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F5B37A8-4AFE-4336-9B14-7B86E2ABFC12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F5B37A8-4AFE-4336-9B14-7B86E2ABFC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F5B37A8-4AFE-4336-9B14-7B86E2ABFC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F5B37A8-4AFE-4336-9B14-7B86E2ABFC12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
