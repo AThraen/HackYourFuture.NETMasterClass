@@ -1,8 +1,69 @@
-# Exercises for Week #2
+# Exercises for Week #3
 
-The overall goal for week 2 is to refactor the code from week 1 and prepare the game logic to be more widely used - for example in the web project we'll be starting on in week 3.
+The overall goal for week 3 is add a web project and build a simple web version of the card game.
 
 
+### Adding the Web Project
+
+![](NewProject.PNG)
+
+![](WebAppMVC.PNG)
+
+
+![](StartUpProject.PNG)
+
+![](AddReference.PNG)
+
+![](AddImages.PNG)
+
+
+[Images](images.zip)
+
+
+Try to run the web project
+![](WebProject1.png)
+
+
+### Modifying the start view:
+```csharp
+@{
+    ViewData["Title"] = "Thirty-One Game";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+
+        <form asp-action="New" asp-controller="Game" method="get">
+            <div class="form-group">
+                <label class="control-label">Your Name</label>
+                <input type="text" name="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="New Game" class="btn btn-default" />
+            </div>
+        </form>
+
+
+    </div>
+```
+
+### Adding the GameController
+
+
+
+### Game model
+
+
+## Game View
+
+
+## Game Service
+
+
+
+
+
+--- old ---
 ### Creating a new Class Library
 We will begin by adding a new Class library to our solution. This will hold the code that the Console game will share with the web project - basically all the game logic.
 Right-click on the solution and select ** Add -> New Project **.
