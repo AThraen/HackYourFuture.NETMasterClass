@@ -67,33 +67,30 @@ Third Lesson Goals:
 * Learn how Razor and Models work together.
 * Understand the basics of routing and how controllers get called.
 * Understand how you can map a form to a model and handle submissions.
-* Examine and adjust Web.Config
 * Debug and explore the Request and Response objects
-* Exercises & homework: Build a basic web-version (ASP.NET Core MVC) of the project made in Lesson 1 & 2 - ideally using the same class library.
+* Exercises & homework: Start to build a web version (ASP.NET MVC) of the Cardgame using the class library created in the second lesson. Reach a point where a new game can be started, and game state shown visually to the player.
 
-Find all material for the third lesson [here](Week3).
+**Find all material for the third lesson [here](Week3).**
 
 ### Fourth lesson
-Using Azure services in your application and hosing it on Azure.
+MVC and Web continued. Completing the web version of the game
 Fourth Lesson Goals:
 * Follow-up on previous 3 lessons
-* Examine the Azure platform and what it provides.
-* Experiment with Cognitive Services as well as Cosmos DB (or other data storage)
-* Learn how to publish a web application to Azure
-* Introduction to Azure Functions.
-* Exercises & homework: Polish the functionality and look and feel of the web version of the game. Persist game state in Azure. Publish game to Azure App Services.
+* Adding Actions and Views to handle player actions and game over scenarios.
+* Improve the UI with React / JS or better HTML+CSS 
+* Understand TagHelpers in .NET Core
+* Looking at a real-life web project
+* Exercises & homework: Complete the game with full functionality. Polish and optimize the look and feel of the game. 
 
 Find all material for the Fourth lesson [here](Week4).
 
 ### Fifth Lesson
-Putting it all together and finishing the main project application
+Using Azure and Publishing your game
 Fifth Lesson Goals:
-* Finalize the project we have been using throughout the previous lessons. 
-* Presenting your work to the others
-* Improve the UI with React / JS and better HTML+CSS
+* Examine the Azure platform and what it provides.
+* Experiment with Cognitive Services as well as Cosmos DB (or other data storage)
+* Learn how to publish a web application to Azure
 * Discussing build pipelines and unit testing
-* Looking at a real-life web project
-* Exercises: Extra credit work
-
+* Exercises: Persist game state in Azure. Publish game to Azure App Services. Extra credit work: UI Enhancements or multiplayer support.
 
 Find all material for the Fifth lesson [here](Week5).

@@ -1,6 +1,24 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+
+
+img.selectablecard:hover {
+    transform: scale(1.1);
+}
+
+div.cardtable {
+    background-color: darkgreen;
+    border: 5px groove brown;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+img.playingcard {
+    height: 150px;
+    margin: 0px 0px 0px 0px;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;

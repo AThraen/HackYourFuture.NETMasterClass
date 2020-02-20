@@ -43,6 +43,12 @@ namespace ThirtyOne.Shared.Models
         /// </summary>
         public Player Winner { get; set; }
 
+
+        /// <summary>
+        /// Id of the game
+        /// </summary>
+        public int GameId { get; set; }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -155,7 +161,7 @@ namespace ThirtyOne.Shared.Models
         /// <summary>
         /// Starts the game
         /// </summary>
-        private void StartGame()
+        public void StartGame()
         {
             Deck = new Deck();
             Table = new List<Card>();
