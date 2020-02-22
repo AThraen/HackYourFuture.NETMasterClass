@@ -155,7 +155,7 @@ namespace ThirtyOne.Shared.Models
         /// <summary>
         /// Starts the game
         /// </summary>
-        private void StartGame()
+        public void StartGame()
         {
             Deck = new Deck();
             Table = new List<Card>();

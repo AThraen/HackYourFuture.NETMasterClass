@@ -30,7 +30,7 @@ namespace ThirtyOne.Web.Controllers
 
             Random r = new Random();
             g.GameId = r.Next(1000, 9999);
-            while (_gameService.GameExist(g.GameId))
+            while (_gameService.GameExist(g.GameId)) //Check if the ID is already in use
                 g.GameId = r.Next(1000, 9999);
 
             WebPlayer human = new WebPlayer(Name);
@@ -45,9 +45,9 @@ namespace ThirtyOne.Web.Controllers
             return RedirectToAction("Index", new { Id=g.GameId.ToString()});
         }
 
-        public IActionResult Index(string Id)
+        public IActionResult Index(int Id)
         {
-            Game g = _gameService.LoadGame(int.Parse(Id));
+            Game g = _gameService.LoadGame(Id);
 
             WebPlayer human = g.Players.First() as WebPlayer;
 
