@@ -48,7 +48,6 @@ Second Lesson Goals:
 * Public vs Private vs Protected vs Internal
 * Generics and lists
 * LINQ
-* Exceptions
 * Interfaces
 * Typical OOP patterns
 * Use the System.IO namespace (or similar)
@@ -62,7 +61,7 @@ Second Lesson Goals:
 ### Third lesson
 MVC and Web introduction.
 Third Lesson Goals:
-* Extension methods, anonymous objects and Lambda methods
+* HTTP Theory
 * Understand the Model-View-Controller approach to web development
 * Learn how Razor and Models work together.
 * Understand the basics of routing and how controllers get called.
@@ -79,6 +78,7 @@ Fourth Lesson Goals:
 * Adding Actions and Views to handle player actions and game over scenarios.
 * Improve the UI with React / JS or better HTML+CSS 
 * Understand TagHelpers in .NET Core
+* Exceptions
 * Looking at a real-life web project
 * Exercises & homework: Complete the game with full functionality. Polish and optimize the look and feel of the game. 
 
