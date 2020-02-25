@@ -15,7 +15,7 @@ namespace ThirtyOne.Web.Helpers
         public GameService()
         {
             AppDataPath = Path.Combine(
-                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home"), "ThirtyOneGame");
+                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "HOME"), "ThirtyOneGame");
             Directory.CreateDirectory(AppDataPath);
 
         }
