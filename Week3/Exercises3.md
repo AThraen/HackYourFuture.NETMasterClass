@@ -31,6 +31,7 @@ Right now, we only have the boilerplate site that came with a new project:
 ![](WebProject1.png)
 
 
+
 ### Modifying the start view:
 The default controller is called HomeController, and it's default action is called 'Index'.
 We'll keep it for now, but we need to modify it a bit. What we want is on the default start page to have a form field where you can enter your name and click a button to start a game.
@@ -61,6 +62,13 @@ Also make sure to name the input field "Name" or something similar you can remem
 If you chose to run without debugging in the previous step, you should just be able to save this file and refresh your browser to see the changes.
 
 See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Home/Index.cshtml).
+
+**NOTE: Mac Users**
+When you are editing razor views in web projects, they usually automatically so you can refresh your browser instantly to see the result.
+However, it appears that it doesn't work quite like that on a Mac.
+To achieve the same result, you have to take these 2 steps:
+1. Add Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation NuGet package to the project
+2. Add the following in Startup.cs, ConfigureServices method: ```services.AddControllersWithViews().AddRazorRuntimeCompilation();```
 
 
 ### Game model update
@@ -101,7 +109,7 @@ public class GameService
         public GameService()
         {
             AppDataPath = Path.Combine(
-                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home"), "ThirtyOneGame");
+                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "HOME"), "ThirtyOneGame");
             Directory.CreateDirectory(AppDataPath);
 
         }
