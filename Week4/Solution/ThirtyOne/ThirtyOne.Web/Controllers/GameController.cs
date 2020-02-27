@@ -42,7 +42,7 @@ namespace ThirtyOne.Web.Controllers
 
             _gameService.SaveGame(g);
 
-            return RedirectToAction("Index", new { Id=g.GameId.ToString()});
+            return RedirectToAction("Index", new { Id=g.GameId});
         }
 
         public IActionResult Index(int Id)
@@ -54,6 +54,48 @@ namespace ThirtyOne.Web.Controllers
             GameViewModel viewModel = new GameViewModel() { CurrentGame = g, CurrentPlayer = human };
 
             return View(viewModel);
+        }
+
+        private IActionResult GameOver(Game g)
+        {
+            _gameService.DeleteGame(g.GameId);
+            return View("GameOver",g);
+        }
+
+        public IActionResult MakeAMove(int Id,PlayerAction Action)
+        {
+            Game g = _gameService.LoadGame(Id);
+            WebPlayer human = g.CurrentPlayer as WebPlayer;
+
+            switch (Action)
+            {
+                case PlayerAction.Knock:
+                    human.HasKnocked = true;
+                    g.NextTurn(); //Computers turn, then game over
+                    return GameOver(g);
+                case PlayerAction.DrawFromDeck:
+                    human.DrawFromDeck(g);
+                    break;
+                case PlayerAction.DrawFromTable:
+                    human.DrawFromTable(g);
+                    break;
+            }
+            _gameService.SaveGame(g);
+            return RedirectToAction("Index", new { Id = g.GameId } );
+        }
+
+        public IActionResult DropCard(int Id, int Card)
+        {
+            Game g = _gameService.LoadGame(Id);
+            WebPlayer human = g.CurrentPlayer as WebPlayer;
+
+            human.DropCard(g, Card);
+            
+            if (g.NextTurn()) return GameOver(g);
+
+            _gameService.SaveGame(g);
+
+            return RedirectToAction("Index", new { Id = g.GameId });
         }
     }
 }

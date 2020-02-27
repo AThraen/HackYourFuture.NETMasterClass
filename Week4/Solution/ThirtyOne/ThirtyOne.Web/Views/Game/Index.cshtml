@@ -7,30 +7,37 @@
     <div class="container">
         <div class="row">
             <div class="col-md-7">
-                <h3>Table</h3>
+                @if (Model.CurrentPlayer.Hand.Count <= 3)
+                {
+                    <h3>Table</h3>
 
                     <div class="row cardtable">
+                        <a href="@Url.Action("MakeAMove","Game",new {Action=PlayerAction.DrawFromDeck, Id=Model.CurrentGame.GameId })">
                             <img src="~/images/Cards/back.png" class="playingcard selectablecard" />
+                        </a>
+                        <a href="@Url.Action("MakeAMove","Game",new {Action=PlayerAction.DrawFromTable, Id=Model.CurrentGame.GameId })">
                             <img src="~/images/Cards/@Model.CurrentGame.Table.Last().FileName()" class="playingcard selectablecard" />
+                        </a>
                         @if (!Model.CurrentGame.Players.Any(p => p.HasKnocked))
                         {
-                            <img src="~/images/knock.png" class="playingcard selectablecard" />
+                            <a href="@Url.Action("MakeAMove","Game",new {Action=PlayerAction.Knock, Id=Model.CurrentGame.GameId })">
+                                <img src="~/images/knock.png" class="playingcard selectablecard" />
+                                </a>
+                                }
+
+                        </div>
+                }
+
+                    <h3>Your hand (@Model.CurrentPlayer.Hand.CalculateScore() points)</h3>
+
+                    <div class="row">
+                        @foreach (var c in Model.CurrentPlayer.Hand)
+                        {
+                            <img src="~/images/Cards/@c.FileName()" class="playingcard" />
                         }
 
-
                     </div>
-
-
-                <h3>Your hand (@Model.CurrentPlayer.Hand.CalculateScore() points)</h3>
-
-                <div class="row">
-                    @foreach (var c in Model.CurrentPlayer.Hand)
-                    {
-                        <img src="~/images/Cards/@c.FileName()" class="playingcard" />
-                    }
-
                 </div>
-            </div>
             <div class="col-md-5">
                     <h1 class="display-4">Your turn</h1>
 
