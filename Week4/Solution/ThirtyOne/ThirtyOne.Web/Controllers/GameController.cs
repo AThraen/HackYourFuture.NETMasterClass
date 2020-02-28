@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,11 @@ namespace ThirtyOne.Web.Controllers
     public class GameController : Controller
     {
 
-        private readonly GameService _gameService;
+        private readonly IGameService _gameService;
 
-        public GameController()
+        public GameController(IGameService gs)
         {
-            _gameService = new GameService();
+            _gameService = gs;
         }
 
         /// <summary>
@@ -47,13 +48,24 @@ namespace ThirtyOne.Web.Controllers
 
         public IActionResult Index(int Id)
         {
-            Game g = _gameService.LoadGame(Id);
+            try
+            {
+                Game g = _gameService.LoadGame(Id);
 
-            WebPlayer human = g.Players.First() as WebPlayer;
+                WebPlayer human = g.Players.First() as WebPlayer;
 
-            GameViewModel viewModel = new GameViewModel() { CurrentGame = g, CurrentPlayer = human };
+                GameViewModel viewModel = new GameViewModel() { CurrentGame = g, CurrentPlayer = human };
 
-            return View(viewModel);
+                return View(viewModel);
+            } catch(FileNotFoundException exc)
+            {
+                //Game does not exist, send back to start.
+                return Redirect("/");
+            }
+            catch 
+            {
+                throw;
+            }
         }
 
         private IActionResult GameOver(Game g)
@@ -62,22 +74,25 @@ namespace ThirtyOne.Web.Controllers
             return View("GameOver",g);
         }
 
-        public IActionResult MakeAMove(int Id,PlayerAction Action)
+        public IActionResult MakeAMove(int Id,PlayerAction Move)
         {
             Game g = _gameService.LoadGame(Id);
             WebPlayer human = g.CurrentPlayer as WebPlayer;
 
-            switch (Action)
+            switch (Move)
             {
                 case PlayerAction.Knock:
                     human.HasKnocked = true;
+                    human.LastAction = "knocked";
                     g.NextTurn(); //Computers turn, then game over
                     return GameOver(g);
                 case PlayerAction.DrawFromDeck:
                     human.DrawFromDeck(g);
+                    human.LastAction = "drew from deck";
                     break;
                 case PlayerAction.DrawFromTable:
                     human.DrawFromTable(g);
+                    human.LastAction = "drew from table";
                     break;
             }
             _gameService.SaveGame(g);
@@ -88,11 +103,12 @@ namespace ThirtyOne.Web.Controllers
         {
             Game g = _gameService.LoadGame(Id);
             WebPlayer human = g.CurrentPlayer as WebPlayer;
-
+            human.LastAction += " then dropped " + human.Hand[Card].ToString();
             human.DropCard(g, Card);
             
             if (g.NextTurn()) return GameOver(g);
 
+            //Save game state
             _gameService.SaveGame(g);
 
             return RedirectToAction("Index", new { Id = g.GameId });

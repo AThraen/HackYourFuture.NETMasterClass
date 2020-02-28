@@ -8,7 +8,7 @@ using ThirtyOne.Shared.Models;
 
 namespace ThirtyOne.Web.Helpers
 {
-    public class GameService
+    public class GameService : IGameService
     {
         private readonly string AppDataPath;
 
