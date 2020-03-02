@@ -1,239 +1,118 @@
 # Exercises for Week #4
 
-The overall goal for week 4 is to extend the Web version of the game from Week3 to be a fully functioning single-player (+ computer player) game.
+The overall goal for week 4 is to extend the Web version of the game from Week3 to be a fully functioning single-player (+ computer player) game. But, we will start by preparing our GameService for a future Azure deployment.
 
+### Preparing GameService for Dependency Injection
+You might recall the GameService? The class responsible for saving, loading and checking the game state to files.
+But as we discussed last week, in the future, it might change later how/where we will store this state.
+So, the first thing we will do in these exercises is to prepare it to easily be replaced, using a [design pattern](https://en.wikipedia.org/wiki/Software_design_pattern) called [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection). Relax, it's not as complicated as it sounds.
+Right now, the GameController in it's constructor creates a new GameService object that it uses. Instead we want it to take a parameter indicating which kind of GameService it should use. Maybe in the future we'll introduce a SQLGameService or an AzureGameService. As long as we make sure they all have the same methods, it shouldn't really matter to the GameController.
+So - first of all, we'll create an interface defining those methods, called *IGameService*.
+You can of course create and write the interface yourself, but you could also ask Visual Studio to create it for you.
+You do this by right-clicking on the class name, *GameService* and selecting *Quick actions and refactorings*.
+!()[Refactorings.PNG]
+Then, you simply select *Extract interface* and pick which methods the interface should specify.
+!()[ExtractInterface.PNG]
+
+Luckily, ASP.NET Core supports Dependency Injection out of the box. That means, that it maintains a list of registered *services* it should use when specific objects are required in constructor parameters.
+So, instead of creating a *new GameService()* in the GameController, we simply need to take an IGameService as an input parameter put that in our private field (which should of course also should be changed to IGameService).
+!()[using-igameservice.PNG]
+
+Last thing we need to do, for this to work is to register the service in the StartUp.cs class, *ConfigureServices* method, like this:
+```csharp
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews();
+            services.AddTransient<IGameService, GameService>();
+        }
+```
 
 ### Adding PlayerActions in the Game Index View
+We left off last week at the point where we could start a new game and show the basic game state. The biggest thing we have to deal with now is to let the user perform the actions a player in the game can typically perform when it is their turn:
+- Draw a card from the Deck
+- Draw a card from the Table
+- Knock (call)
+To make a nice and easy way to transmit the players actions, we'll introduce an Enum with those 3 states.
 
+Try to make it yourself - but if you get lost, you can check against the sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Models/PlayerAction.cs).
 
 ### GameController - MakeAMove
+When a player makes a move (one of the above mentioned actions), we will need an action method in the Controller to handle it.
+The Action method should take the Id of the game as input, as well as the move (PlayerAction) made by the player.
+This is what can should happen:
+1. The player knocks. Mark the player as .HasKnocked=true. Call *NextTurn()* on the game object to complete the turn, and let the computer player take it's turn. Then move straight to the GameOver view.
+2. The player draws a card (either from the deck or the hand). Let the player draw from the appropiate place, save the game and redirect to the Index view.
 
-
-### Pick a card to drop
-
+Try to write this code yourself, from the logic outlined above. If you get into problems, the sample code is [here](Solution/ThirtyOne/ThirtyOne.Web/Controllers/GameController.cs).
 
 ### GameController - Handle drop of card, complete move.
+To complete the players move (in the cases where they drew a card), they also need to pick a card to drop. We will update the Index view to take of this shortly, but before we do that, we should also have an Action method on the Game controller that can drop a card from the player hand and end the turn.
+It should take 2 parameters: Game ID and Card (Index of card on the players hand, typically 0-3).
+This is what it should do:
+1. Load the game from the game id
+2. Drop the card onto the table
+3. Complete the turn by executing the *NextTurn* method on the Game object.
+4. If the game is over, return the GameOver view we will create next
+5. Otherwise, save the new game state and redirect to the Index method.
 
+Try to write this code yourself, from the logic outlined above. If you get into problems, the sample code is [here](Solution/ThirtyOne/ThirtyOne.Web/Controllers/GameController.cs).
 
 ### GameController - Game Over
+Both the two new methods introduced above can in GameOver situations need to return the GameOver view. To make it easy, we can add a method that takes care of the GameOver situation and returns the GameOver view.
+It needs to take the current Game as an input parameter, clean up (delete) the game file and return a GameOver view with the Game model as it's view model.
+
+```csharp
+        private IActionResult GameOver(Game g)
+        {
+            _gameService.DeleteGame(g.GameId);
+            return View("GameOver",g);
+        }
+```
+
+
+### GameController - Extra credit work
+Before we leave the GameController to focus on the views, here are a few optional extra-credit tasks:
+1. Update the *LastAction* property on the WebPlayer with the actions they perform, so we can output it in the game. For example "knocked", "drew card from table, dropped 2 of clubs" and so on.
+2. Introduce some exception handling. For example if the Index method is called with a game ID that doesn't exist, redirect to the Home/Index view instead of throwing an ugly exception.
+
+Try to write this code yourself, from the logic outlined above. If you get into problems, the sample code is [here](Solution/ThirtyOne/ThirtyOne.Web/Controllers/GameController.cs).
+
+### Index View update
+Now, let's update the views. We will start with the main Game Index view.
+
+**First**, we should handle that the player can now be in 2 states. Either he is beginning his turn (he only has 3 cards on hand) or he is half-way through his turn and should decide on a card to drop (he has 4 cards on his hand). We should only show the Table and it's actions in the first case. And only allow him to choose a card to drop in the second.
+We can use a basic if statement wrapped around the relevant areas to achieve this.
+```@if (Model.CurrentPlayer.Hand.Count <= 3){...}```
+
+**Secondly**, we should wrap the possible actions (cards or knock icon) in <A> tags with an HREF that points to the appropiate action method, and passes along the proper information. This goes both for the actions to draw card / knock, and for those when you need to drop a card. Like this:
+  ```
+  <a href="@Url.Action("MakeAMove","Game",new {Move=PlayerAction.DrawFromDeck, Id=Model.CurrentGame.GameId })">
+    <img src="~/images/Cards/back.png" class="playingcard selectablecard" />
+  </a>
+  ```
+The ```@Url.Action([action],[controller],[method parameters])``` extension method allows you do have the system build the proper url.
+
+Once again, try to update the view yourself, but if you get into trouble, the sample solution is [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Game/Index.cshtml).
 
 
 ### View - Game Over
-
-
-
-
-
----
-### Adding the Web Project
-We will begin by adding a new ASP.NET Core MVC Web project to our solution, by right-clicking on the solution and selecting Add New Project.
-I recommend calling it *ThirtyOne.Web*.
-
-![](NewProject.PNG)
-
-Now, pick the right project type. We'll take the MVC variant for now - even though it comes with some pre-built site (based on Bootstrap).
-![](WebAppMVC.PNG)
-
-Next, we'll right-click on the new project and select "Set as Start-up Project" to make sure that it'll run when we start it.
-![](StartUpProject.PNG)
-
-We should also remember to add references from the new web project to the shared class library with the game logic we created last week.
-![](AddReference.PNG)
-
-Since we are going to build something with a more graphical UI, we will need images of cards. 
-[Here](images.zip) are some royalty free images you can download, unzip and put in an "images" folder under "wwwroot".
-The wwwroot is the folder that will hold all the static assets in your actual root of your site "/" - like images, javascript and css.
-Once added, your project should look like this:
-
-![](AddImages.PNG)
-
-Finally, we can try to run the project. For this we can either use the usual "run" (f5 or play button) which will run with debugging - but for a faster and smoother experience, I recommend CTRL+F5 or Debug menu|Run Without debugging. Only use debugging when you plan to actually debug (breakpoints and so forth).
-When running, you'll notice that your site actually starts a small webserver up in a console, called IISExpress, and loads your site in a browser.
-Right now, we only have the boilerplate site that came with a new project:
-![](WebProject1.png)
-
-
-### Modifying the start view:
-The default controller is called HomeController, and it's default action is called 'Index'.
-We'll keep it for now, but we need to modify it a bit. What we want is on the default start page to have a form field where you can enter your name and click a button to start a game.
-To achieve this, we will modify the Home/Index.cshtml view, and insert a form. In the form, we'll use ASP.NET Core Taghelpers to point the form towards a future controller called "Game" and an action called "New" - we'll implement that later, to create and instantiate a new game. 
-Also make sure to name the input field "Name" or something similar you can remember - as that should match with the input parameter to our future New action method on the GameController.
-
-```csharp
-@{
-    ViewData["Title"] = "Thirty-One Game";
-}
-
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-
-        <form asp-action="New" asp-controller="Game" method="get">
-            <div class="form-group">
-                <label class="control-label">Your Name</label>
-                <input type="text" name="Name" class="form-control" />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="New Game" class="btn btn-default" />
-            </div>
-        </form>
-
-
-    </div>
+We also need to add a new view in the Game folder, called *GameOver.cshtml*. This is the view that is called with the Game model when the game is over, and here you should show the winnner, and perhaps show both players in descending points order - as well as their cards.
+Remember to use the correct namespaces in the top of the view (to use the FileName() and CalculateScore() extension methods):
 ```
-If you chose to run without debugging in the previous step, you should just be able to save this file and refresh your browser to see the changes.
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Home/Index.cshtml).
-
-
-### Game model update
-Before we start coding the GameController we need to prepare a few details. First of all, we need to make an adjustment to our Game Model - the one in the shared library.
-One big change is that we will start to assign games with an integer id. We need this, cause several concurrent games might be ongoing at the same time and we'll need to distinguish them from each other.
-
-**Add an int GameId property to the Game class*
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Shared/Models/Game.cs).
-
-
-### Extend the Card with Image file name
-Since we now have image file names for the Cards, we should make it easy to get the file name. You can either achieve this by adding a string FileName() method to the Card itself (but that is ugly, as the Card is in the Shared library which shouldn't know anything about the UI implementation), or - better yet - add an extension method for it in the new Web project. For example in a new static class called CardExtensions.
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Helpers/CardExtensions.cs).
-
-
-### Add a WebPlayer
-Just like in the Console game, where we had the ConsolePlayer to represent the human, we will need the same here. 
-Let's create it under Models in the web project and call it WebPlayer.
-It should inherit from the Player base class, implement a constructor that takes a name and passes it straight to the base class constructor, as well as the mandatory 'void Turn(Game)' method. However that should do nothing.
-
-Try to make this one yourself - if you run into problems, you can see the sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Models/WebPlayer.cs).
-
-### Game Service
-A central thing we will need to do is to be able to persist the game state. And not just for one game - for many games. That's why we have a GameId now. We could of course persist the game state in a cookie or a session store for the player. 
-But if we later decide to make the game multi-player, then that would be a problem. We could also persist the state in a database or in the file system or in a cloud storage. There are many options. For starters we will use the file system, but at the same time prepare the system by putting all the logic in a class of it's own, that we potentially in the future could replace if we decide to change to storage.
-
-Create a class called GameService. Typically something like this would be placed in a "Business" folder or perhaps "Helpers" or "Services".
-In the constructor we'll want to add some logic that figures out where a folder we can write to is. Often, the user context the web-server is running under will have very limited access rights to write anywhere on disk - but typically there is a folder where it is allowed.
-However, how we get the path to that folder varies a bit depending on the operating system (remember - as this is ASP.NET Core, it can run on many systems), so we will use a bit of logic to get that configured:
-
-```csharp
-public class GameService
-    {
-        private readonly string AppDataPath;
-
-        public GameService()
-        {
-            AppDataPath = Path.Combine(
-                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home"), "ThirtyOneGame");
-            Directory.CreateDirectory(AppDataPath);
-
-        }
-
-        private string GetFilePath(int GameId)
-        {
-            return Path.Combine(AppDataPath, GameId.ToString() + ".json");
-        }
-		...
-```
-With this logic in place, we can always just call GetFilePath from other methods in the GameService to get the path for a given GameId.
-
-**Create these methods:**
-- void SaveGame(Game g). Use File.WriteAllText to save the serialized game
-- Game LoadGame(int id). Use File.ReadAllText here.
-- void DeleteGame(int id). Use File.Delete to delete a file.
-- bool GameExist(int id) to check if a game exist. Use File.Exist to check in this case.
-- For extra credit: int CleanUpOldGames - that removes old games no longer used and returns a count of how many was cleaned up.
-
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Helpers/GameService.cs).
-
-
-### Adding the GameController
-Now it's getting interesting!
-We'll now add the controller that will be the responsible of executing the game.
-We will place it in the Controllers folder and it should inherit from the ```Controller``` class.
-
-For now, it will need 3 elements:
-- A constructor that put's a new GameService object in a private member field, so we can always access it.
-- An action method called "New" that takes a string Name and creates a game with a unique ID, a computer player and a web player, starts the game and saves the state before redirecting the browser to the main Index action.
-- An Index action method that takes an ID as input, loads the game, creates a view model with the Game and the current player - and returns a View.
-
-Let's take them one-by-one:
-The *GameService* should simply be a private field - no need to make it a property, but we can mark it readonly as it's only the constructor that will write to it - when it creates the service. ```private readonly GameService _gameService;```. In the Constructor simply assign it with a new GameService for now.
-
-The New method might be the trickiest - here is one approach to solving it:
-
-```csharp
-        public IActionResult New(string Name)
-        {
-            Game g = new Game();
-
-            Random r = new Random();
-            g.GameId = r.Next(1000, 9999);
-            while (_gameService.GameExist(g.GameId)) //Check if the ID is already in use
-                g.GameId = r.Next(1000, 9999);
-
-            WebPlayer human = new WebPlayer(Name);
-            g.Players.Add(human);
-            ComputerPlayer computer = new ComputerPlayer("Computer");
-            g.Players.Add(computer);
-
-            g.StartGame();
-
-            _gameService.SaveGame(g);
-
-            return RedirectToAction("Index", new { Id=g.GameId.ToString()});
-        }
-```
-
-The Index method is a lot easier - at least for now. Next week we will add more logic to it. 
-However, there is one new element: A **GameViewModel**. We will need to define this as a class in our Models folder (in the Web project) - but it's extremely simple - just has 2 properties: Game CurrentGame, and WebPlayer CurrentPlayer.
-
-```csharp
-        public IActionResult Index(int Id)
-        {
-            Game g = _gameService.LoadGame(Id);
-
-            WebPlayer human = g.Players.First() as WebPlayer;
-
-            GameViewModel viewModel = new GameViewModel() { CurrentGame = g, CurrentPlayer = human };
-
-            return View(viewModel);
-        }
-```
-
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Controllers/GameController.cs).
-
-
-### Game View
-For the last (and probably most fun) piece of this weeks puzzle, we just need to make the Game Index View.
-This is the View that should become the main view while playing the game.
-For now, all it has to do is show the player the current state of the game - Next week we'll add options for him to interact while playing the game.
-
-Under 'Views' create a folder called 'Game' and add a new View to that.
-Initialize it with a few using statements and a proper model:
-```csharp
-@using ThirtyOne.Web.Helpers
 @using ThirtyOne.Shared.Helpers
-@model GameViewModel
+@using ThirtyOne.Web.Helpers
+@model ThirtyOne.Shared.Models.Game
 ```
 
-Having the model assigned in the top, means that anywhere through the Razor file you can use ```@Model``` to access anything in the model and output it.
+And the rest should be smooth sailing. You can use LINQ to order the players by descending point score: 
+```
+@foreach (var p in Model.Players.OrderByDescending(p => p.Hand.CalculateScore()))
+    {
+    ...
+    }
+```
 
-This is what the view **should** do:
-- Show the current table with the 3 action options a player has. The Deck (backside of a card - '/images/Cards/back.png'), the card on the table and a symbol indicating a knock on the table '/images/knock.png'.
-- The players current hand ( 3 cards) and it's calculated score
-- A list of players in the game, their LastAction and if they have knocked.
-
-The last task can be put in it's own partial view (placed in the Views/Shared folder) and inserted like this: 
-```<partial name="_PlayerList" model="Model.CurrentGame" />```
+If you struggle with it, the sample solution is [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Game/GameOver.cshtml).
 
 
-Finally, you might also want to update the css in wwwroot/css. 
-
-This is what the sample looks like:
-
-![](GameIndex.PNG)
-
-See sample code [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Game/Index.cshtml) and [here](Solution/ThirtyOne/ThirtyOne.Web/Views/Shared/_PlayerList.cshtml).
 
