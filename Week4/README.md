@@ -10,7 +10,10 @@ Here you can find all the materials you will need for Week 3.
 An example solution to the exercises if you get stuck or fall behind. Try to make your own solution first, following the instructions above.
 
 #### Video
-Video will come later.
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=elMX4kynhXc
+" target="_blank"><img src="http://img.youtube.com/vi/elMX4kynhXc/0.jpg" 
+alt="Week 1 video" width="240" height="180" border="10" /></a>
+
 
 ### Homework
 If you want your homework reviewed, you should create a repository under your own account and check in your solution in GitHub. 
@@ -19,3 +22,6 @@ When you have committed your solution, let teacher/mentors know in slack and we 
 
 ### Additional reading
 
+[ASP.NET Core Dependency Injection](https://www.tutorialsteacher.com/core/dependency-injection-in-aspnet-core)
+
+[C# Exception Handling](https://www.tutorialspoint.com/csharp/csharp_exception_handling.htm)
