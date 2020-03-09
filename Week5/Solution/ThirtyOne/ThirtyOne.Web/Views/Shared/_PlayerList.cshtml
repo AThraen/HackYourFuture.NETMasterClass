@@ -1,0 +1,15 @@
+﻿@model ThirtyOne.Shared.Models.Game
+<h3>Players:</h3>
+<div class="list-group">
+    @foreach (var p in Model.Players)
+    {
+        <div class="list-group-item @((Model.CurrentPlayer==p)?"active":"")">
+            <h4>@p.Name</h4>
+            @if (p.HasKnocked)
+            {
+                <span class="badge">Knocked</span>
+            }
+            <p class="list-group-item-text">@p.LastAction</p>
+        </div>
+    }
+</div>
