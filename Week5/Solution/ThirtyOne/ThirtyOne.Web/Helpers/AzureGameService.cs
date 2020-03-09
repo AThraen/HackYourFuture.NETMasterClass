@@ -16,7 +16,7 @@ namespace ThirtyOne.Web.Helpers
         private CloudBlobContainer container;
         public AzureGameService()
         {
-            account = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=hyfthirtyone;AccountKey=QWDFORLYmz9KDXncBv/QnTGWMVguBuYuRY/8SkEdcATyBmrhWs74SXSqJetL5L7YZ3oCbkDNZq+Ex4H0gf1GWA==;EndpointSuffix=core.windows.net");
+            account = CloudStorageAccount.Parse("");
             client=account.CreateCloudBlobClient();
             container = client.GetContainerReference("games");
             container.CreateIfNotExists();
