@@ -82,7 +82,7 @@ Fourth Lesson Goals:
 * Looking at a real-life web project
 * Exercises & homework: Complete the game with full functionality. Polish and optimize the look and feel of the game. 
 
-Find all material for the Fourth lesson [here](Week4).
+**Find all material for the Fourth lesson [here](Week4).**
 
 ### Fifth Lesson
 Using Azure and Publishing your game
@@ -93,4 +93,4 @@ Fifth Lesson Goals:
 * Discussing build pipelines and unit testing
 * Exercises: Persist game state in Azure. Publish game to Azure App Services. Extra credit work: UI Enhancements or multiplayer support.
 
-Find all material for the Fifth lesson [here](Week5).
+**Find all material for the Fifth lesson [here](Week5).**

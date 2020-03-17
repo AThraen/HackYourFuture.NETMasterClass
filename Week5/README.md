@@ -10,7 +10,14 @@ Here you can find all the materials you will need for Week 5.
 An example solution to the exercises if you get stuck or fall behind. Try to make your own solution first, following the instructions above.
 
 #### Video
-Video will follow later.
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=SInbQlPEkco
+" target="_blank"><img src="http://img.youtube.com/vi/SInbQlPEkco/0.jpg" 
+alt="Week 5 video" width="240" height="180" border="10" /></a>
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=JH-SSoHn7Hw
+" target="_blank"><img src="http://img.youtube.com/vi/JH-SSoHn7Hw/0.jpg" 
+alt="Week 5 video" width="240" height="180" border="10" /></a>
+
 
 ### Homework
 If you want your homework reviewed, you should create a repository under your own account and check in your solution in GitHub. 
